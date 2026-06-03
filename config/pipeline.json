@@ -1,0 +1,31 @@
+{
+  "model_path": "models/yolo11n.onnx",
+  "video_path": "",
+  "device": "cpu",
+  "frame_count": 60,
+  "frame_queue_size": 8,
+  "cache_capacity": 30,
+  "display_enabled": false,
+  "print_detections": false,
+  "output_video_path": "output_annotated.mp4",
+  "enable_llm_analysis": false,
+  "llm_endpoint": "http://localhost:8000/analyze",
+  "http_timeout_ms": 65000,
+  "can": {
+    "enabled": false,
+    "interface": "vcan0",
+    "receive_timeout_ms": 100
+  },
+  "mqtt": {
+    "enabled": false,
+    "broker": "tcp://127.0.0.1:1883",
+    "client_id": "vehicle-edge-001",
+    "topic_prefix": "vehicle/vehicle-001",
+    "qos": 1,
+    "retain": false,
+    "keep_alive_seconds": 30,
+    "queue_capacity": 128
+  },
+  "log_level": "info",
+  "log_file": "logs/vehicle.log"
+}

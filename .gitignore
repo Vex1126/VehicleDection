@@ -1,0 +1,29 @@
+.venv/
+build*/
+logs/
+python/__pycache__/
+*.py[cod]
+__pycache__/
+
+# Local media and generated outputs
+*.mp4
+*.avi
+*.mov
+*.mkv
+output_annotated.*
+
+# Local model exports and invalid test artifacts
+models/*.invalid.onnx
+
+# Editor and OS noise
+.idea/
+.vscode/
+*.swp
+*~
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+CTestTestfile.cmake
+Testing/

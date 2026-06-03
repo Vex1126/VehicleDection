@@ -1,0 +1,10 @@
+.venv
+.git
+build
+logs
+python/__pycache__
+__pycache__
+*.py[cod]
+*.mp4
+*.pcap
+models/*.invalid.onnx

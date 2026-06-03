@@ -1,0 +1,126 @@
+• 下面是完整测试流程，按顺序跑即可。
+
+  1. 进入项目
+
+  cd /home/yjt/Vehicle
+
+  2. 编译项目
+
+  cmake -S . -B build -DVEHICLE_BUILD_TESTS=ON
+  cmake --build build --parallel
+
+  3. 跑单元测试
+
+  ctest --test-dir build --output-on-failure
+
+  看到这个表示通过：
+
+  100% tests passed
+
+  4. 测试离线视频检测
+
+  ./build/vehicle \
+    --video /home/yjt/output.mp4 \
+    --model models/yolo11n.onnx \
+    --frames 50 \
+    --device cpu
+
+  应看到：
+
+  loading YOLO ONNX with ONNX Runtime
+  reading frames with OpenCV VideoCapture
+  processed_frames=50
+  fps=...
+  cpu_percent=...
+  rss_bytes=...
+
+  5. 测试离线视频可视化
+
+  ./build/vehicle \
+    --video /home/yjt/test.mp4 \
+    --model models/yolo11n.onnx \
+    --frames 300 \
+    --device cpu \
+    --display
+
+  窗口中应看到检测框、ID、轨迹和风险标签。按 q 或 Esc 退出。
+
+  6. 测试摄像头检测
+
+  先确认摄像头：
+
+  ls /dev/video*
+
+  如果看到 /dev/video0，运行：
+
+  ./build/vehicle \
+    --video 0 \
+    --model models/yolo11n.onnx \
+    --frames 300 \
+    --device cpu \
+    --display
+
+  如果是第二个摄像头：
+
+  ./build/vehicle --video 1 --model models/yolo11n.onnx --frames 300 --device
+  cpu --display
+
+  7. 测试 LLM/HTTP 外部服务
+
+  开第一个终端：
+
+  cd /home/yjt/Vehicle
+  python3 python/llm_behavior_analyzer.py serve 8000
+
+  开第二个终端：
+
+  cd /home/yjt/Vehicle
+
+  ./build/vehicle \
+    --video /home/yjt/test.mp4 \
+    --model models/yolo11n.onnx \
+    --frames 10 \
+    --device cpu \
+    --llm \
+    --llmendpoint http://127.0.0.1:8000/analyze
+
+  如果触发危险事件，输出 evidence 里会出现：
+
+  llm_context=accepted
+
+  8. 测试日志文件
+
+  ./build/vehicle \
+    --video /home/yjt/output.mp4 \
+    --model models/yolo11n.onnx \
+    --frames 20 \
+    --log-file logs/test.log
+
+  查看日志：
+
+  tail -50 logs/test.log
+
+  9. 测试 GPU 参数
+
+  ./build/vehicle \
+    --video /home/yjt/output.mp4 \
+    --model models/yolo11n.onnx \
+    --frames 10 \
+    --device gpu
+
+  当前是 CPU 版 ONNX Runtime，所以正常会看到：
+
+  CUDA provider unavailable ... falling back to CPU provider
+
+  这说明 GPU 分支被调用了，只是当前环境没有 GPU 版 ORT。
+
+  10. 测试 Docker
+
+  docker compose config
+  docker compose build
+  docker compose up
+
+  完整需求验收表：
+
+  cat docs/requirements_matrix.md
+
